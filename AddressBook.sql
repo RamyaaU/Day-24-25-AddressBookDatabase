@@ -1,163 +1,143 @@
---UC 1 : Ability to create Address Book Service DB 
---Creating new database
-create database addressbook_service;
+--UC1 --> Create database AddressBook_Service
+create database Address_Book_Service;
 
-use addressbook_service;
+use Address_Book_Service;
 
---UC2--
---creating table addressbook
-create table addressbook
-(FirstName varchar(100) not null,
-LastName varchar(100),
-Address_Details varchar(500) not null,
-City varchar(50) not null,
-State_Name varchar(50) not null,
-Zip int not null,
-PhoneNo bigint not null,
-Email varchar(250) not null
+--UC2 --> Ability to create a Address Book Table with first and last names, address, city, state, zip, phone number and email as its attributes
+
+create table Address_Book
+(
+	First_Name varchar(20),
+	Last_Name varchar(20),
+	Address varchar(20),
+	City varchar(15),
+	State varchar(15),
+	Zip int,
+	Phone_Number varchar(13),
+	Email varchar(20)
 );
 
---UC3--
---Insert data into table
-insert into addressbook (FirstName,LastName,Address_Details,City,State_Name,Zip,PhoneNo,Email)
-values
-('Steve','Rogers','Times_Square','Lucknow','UP',233221,9988778899,'steve@gmail.com'),
-('Tony','Stark','Block_2','Surat','Gujrat',2233225,5544554433,'tony.stark@yahoo.com'),
-('Captain','America','NIT_Agartala','Agartala','Tripura',799046,9988776655,'captain.america@gmail.com'),
-('Thanos','Uncle','sector_2','Kota','Rajasthan',655443,998775654,'thanos@avengers.com'),
-('Robert','Downey','Stark_Tower','Kolkata','West_Bengal',8877665,9988776677,'robert@gmail.com');
+--UC3 --> Ability to insert new Contacts to Address Book
+Insert into Address_Book(First_Name,Last_Name,Address,City,State,Zip,Phone_Number,Email) values
+('Abhishek','J','Vijaynagar','Mysore','Karnataka',590016,'8951604950','abhij@gmail.com'),
+('Bhavana','Ram','Indiranagar','Belgaum','Mumbai',548965,'9984189632','bhavana@gmail.com'),
+('Chandan','Jay','Rajajinagar','Hubli','Madhyapradesh',571258,'7412365895','jay@gmail.com'),
+('Darmesh','Reddy','Chordroad','Hyderabad','Andhrapradesh',589647,'7547891235','reddy@yahoo.com')
 
--- displaying table
-select * from addressbook;
+Select * from Address_Book
 
---UC4--
---dataretrieval--
-select * from addressbook;
+--UC4 -->Ability to edit existing contact person using their name
+update Address_Book set Last_Name='Kunal' where First_Name='Darmesh';
 
---UC 5 : Ability to delete existing contact person using their name 
---Edit and Update data of an existing contact
-delete from addressbook  where FirstName='Steve' and LastName='Rogers';
+Select * from Address_Book
 
--- displaying table
-select * from addressbook;
+--UC5 -->Ability to delete a person using person's name
+Delete from Address_Book where First_Name = 'Darmesh';
 
---UC 6 : Ability to retrieve person belonging to a city or state from address book table
---Retrieve details of people belonging to either city Surat or state Tripura
-select * from addressbook where State_Name='Tripura' or City='Surat';
+--UC6 --> Ability to Retrieve Person belonging to a City or State from the Address Book
+Select * from Address_Book;
 
---UC 7 : Ability to understand the size of address book by City and State
---Inserting more data into table
-insert into addressbook values
-('Peter','Parker','Sector 32','Surat','Gujrat',137667,7765434567,'peter@gmail.com'),
-('Virat','Kohli','Block 2','Varodra','Gujrat',138675,9876545678,'virat@gmail.com');
-select * from addressbook;
---Find size of address book by city
-select City,count(City) as PeopleInCity from addressbook group by City;
---Find size of address book by State
-select State_Name,count(State_Name) as PeopleInState from addressbook group by State_Name;
+--UC7 --> Ability to understand the size of address book by City and State
+Select COUNT(City) as City_Count from Address_Book ;
+Select COUNT(State) as State_Count from Address_Book ;
 
-  
---UC 8 : Ability to retrieve entries sorted alphabetically by Person’s name for a given city
---Displaying table
-select * from addressbook;
---Retrieve entries sorted alphabetically by name for Surat
-select * from addressbook where City='Surat' order by FirstName+LastName;
+--UC8 --> Ability to retrieve entries sorted alphabetically by Person’s name 
+Select * from Address_Book order by First_Name Asc;
 
---UC 9 : Ability to identify each Address Book with name and Type
---Altering address_book to add new columns, addressbookName and Type of contacts
-alter table addressbook add AddressBookName varchar(100),ContactType varchar(100);
---Updating the new columns
-update addressbook set AddressBookName='Akash';
-update addressbook set ContactType='FRIENDS' where State_Name='Gujrat';
-update addressbook set ContactType='FAMILY' where State_Name='Tripura';
-update addressbook set ContactType='PROFESSION' where State_Name='Rajasthan';
+--UC9 --> Ability to identify each Address Book with name and Type. - Here the type could Family, Friends, Profession, etc
+--- Alter Address Book to add name and type
 
---Find the details with given address book name and given contact type
-select * from addressbook where AddressBookNAme='Akash' and ContactType='FRIENDS';
+Alter table  Address_Book add AddressBook_Name varchar(20) , Type varchar(20);
 
---UC10--: Ability to get number of contact persons i.e. count by type
+Update Address_Book set Type = 'Family' , AddressBook_Name = 'A' where First_Name='Abhishek';
+Update Address_Book set Type = 'Friend', AddressBook_Name = 'B' where Last_Name='Ram';
+Update Address_Book set Type='Profession' , AddressBook_Name = 'C' where Last_Name='Jay';
 
---Getting number of contact persons for each ContactType
-select ContactType,Count(ContactType) as NumberOfContacts from addressbook group by ContactType;
+select * from Address_Book
 
---UC 11 : Ability to add person to both Friend and Family
---Adding the same person to both friend and family types
-insert into addressbook values
-('Tony','Stark','Block_2','Surat','Gujrat',2233225,5544554433,'tony.stark@yahoo.com','Akash','FAMILY');
---Retrieving details of the duplicated contact
-select * from addressbook where FirstName='Tony' and LastName='Stark';
+--UC10 --> Ability to get number of contact persons i.e. count by type
+Select COUNT(Type) as Family_Members from Address_Book where Type = 'Family' group by Type;
 
---uc12
-create table contact(
-ID int not null identity(1,1) primary key,
-FirstName varchar(20) not null,
-LastName varchar(20) not null,
-PhoneNo varchar(20) not null,
-Email varchar(30) not null);
+Select Count(Type) as Friend from Address_Book where Type = 'Friend' group by Type;
 
-select * from contact;
-insert into contact values (
-'Peter','Parker','7765434567','peter@gmail.com');
-insert into contact values (
-'Tony','Stark','5544554433','tony.stark@yahoo.com');
-insert into contact values (
-'Virat','Kohli','9876545678','virat@gmail.com');
-insert into contact values (
-'Robert','Downey','9988776677','robert@gmail.com');
+--UC12 --> Ability to create Normalization table for Address_Book
 
-create table address(
-ID int not null foreign key references contact(ID),
-AddressBookName varchar(20) not null,
-ContactType varchar(20) not null,
-Address_Details varchar(100),
-City varchar(100),
-State_Name varchar(100),
-Zip varchar(6)
+/*----------------------CREATE NEW ADDRESS BOOK-------------------------*/
+create table New_Address_Book
+(
+	Id int primary key identity(1,1),
+	First_Name varchar(50),
+	Last_Name varchar(50),
+	Address varchar(50),
+	City varchar(50),
+	State varchar(50),
+	Zip int,
+	Phone_Number varchar(50),
+	Email varchar(50)
 );
 
-select * from address;
+Insert into New_Address_Book values
+('Prerana','Singh','CollegeRoad','Belgaum','Karnataka',590016,'8792981111','prerana@gmail.com'),
+('Rani','Weeber','Srinagar','Hubli','Karnataka',589632,'7412589632','rani@gmail.com'),
+('Vicky','Kaushal','Ameerpet','Hyderabad','AndhraPradesh',456987,'8523697412','vivek@gmail.com'),
+('Saayesha','Tubaki','Basweshwar Nagar','Bangalore','Karnataka',560079,'6987452315','saayesha@gmail.com')
 
-insert into address values(
-1,'Peter','FRIENDS','Newtown','Kolkata','WB','786598');
-insert into address values(
-2,'Tony','PROFESSION','NIT','Agartala','Tripura','799260');
-insert into address values(
-3,'Captain','FRIENDS','Mansarovar','moradabad','UP','233221');
-insert into address values(
-4,'Robert','FAMILY','Mayur Vihar','Delhi','Delhi','233223');
+select * from New_Address_Book
 
-update address set ID=4 where AddressBookName='Peter';
+create table Address_Book_Name
+(
+	Id int,
+	Name varchar(30),
+	Foreign Key (Id) references New_Address_Book(Id)
+);
 
-/*UC 13 : Ensuring all retrieve queries are working fine with new table structure*/
-select * from contact;
-select * from contact_address;
-select * from type;
-select * from contact_type;
-select * from addressbookList;
-select * from addressbookmap;
+select * from Address_Book_Name;
 
---UC 6 working
---persons in aparticular city
-select c.*,ca.city,ca.state,ca.zip
-from contact c,contact_address ca
-where c.Firstname=ca.FirstName and c.LastName=ca.lastName and ca.city='delhi';
---persons in a particular state
-select c.*,ca.city,ca.state,ca.zip
-from contact c,contact_address ca
-where c.Firstname=ca.FirstName and c.LastName=ca.lastName and ca.state='chennai';
+create table Address_Book_Type
+(
+	Id int,
+	Type varchar(50),
+	Foreign Key (Id) references New_Address_book(Id),
+);
 
---UC 7 working
-select City,count(City) as PeopleInCity from contact_address group by City;
-select State,count(State) as PeopleInState from contact_address group by State;
+Select * from Address_Book_Type
 
---UC 8 working
-select c.*,ca.city,ca.state,ca.zip
-from contact c,contact_address ca
-where c.Firstname=ca.FirstName and c.LastName=ca.lastName and ca.City='delhi' 
-order by ca.FirstName,ca.LastName;
+Insert into Address_Book_Type values(1,'Friend'),(2,'Family'),(3,'Profession'),(4,'Friend');
 
---UC 10 working
-select t.ContactType,count(ct.TypeCode) as NumberOfContacts
-from contact_type ct,type t
-where t.TypeCode=ct.TypeCode
-group by t.ContactType;
+/*UC6 --> Retireve the person belong to a particular city or state*/
+
+select * from New_Address_Book where city = 'Belgaum';
+
+select * from New_Address_Book where state = 'Andhra Pradesh'
+
+/*UC 7 --> A bility to get the count of address book by state or city*/
+Select Count(state) as State_Count from New_Address_Book where state = 'Karnataka' group by state 
+
+Select Count(city) as City_Count from New_Address_Book where city = 'Bangalore' group by city 
+
+/*UC8 --> To sort alphabetically*/
+Select * from New_Address_Book order by First_Name
+
+/*UC10 -->  Ability to get the number of contact persons by type*/
+Select Count(Type) , Type
+from Address_Book_Name ad_name  , Address_Book_Type ad_type
+where ad_name.Id = ad_type.Id
+group by Type;
+
+/*UC18 - Date added column is created is inserted*/
+
+Alter table New_Address_Book 
+Add AddedDate DateTime
+
+select * from New_Address_Book
+
+Update New_Address_Book Set AddedDate = '01-01-2019' where Id = 1;
+Update New_Address_Book Set AddedDate = '02-12-2019' where Id = 2;
+Update New_Address_Book Set AddedDate = '03-09-2018' where Id = 3;
+Update New_Address_Book Set AddedDate = '12-04-2020' where Id = 4;
+
+select * from New_Address_Book
+
+update New_Address_Book Set First_Name = 'Surabhi' where Id = 4;
+
+select * from New_Address_Book
